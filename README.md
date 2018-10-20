@@ -78,23 +78,27 @@ Following the **environment** variables that are available for JMeter server:
 
 ### JMeter Client
 
-- Execute a Test Plan from volume
+- Execute a **Test Plan** from volume mount
 
       docker run -t -v /D/DEVELOPMENT/Github/Apache-JMeter-Toolkit/files/examples:/mnt/source apache-jmeter -t /mnt/source/Test01.linux.jmx
 
-- Execute a Test Plan from git source
+- Execute a **Test Plan** from **git source**
 
       docker run -t -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
 
-- Execute a script from git source
+- Execute a **script** from **git source**
 
-      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/test-script.sh
+      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/files/examples/test-script.sh
 
-- Execute a distributed test among jmeter servers
+  > For scripts it is recommended to use ``jmeter-start.sh`` since it support for **distributed** testing using the same environment variables. An example could be seen at ``examples/test-script.sh``
+
+- Execute a **distributed** test among jmeter servers
+
+  > Use ``-e JMETER_CLOSE_REMOTE_SERVERS=TRUE`` to force to close the remote servers when the tests finish
 
       docker run -t -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
 
-  > Use ``-e JMETER_CLOSE_REMOTE_SERVERS=TRUE`` to force to close the remote servers when the tests finish
+      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/files/examples/test-script.sh
 
 Following the **environment** variables that are available for JMeter client:
 
