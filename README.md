@@ -71,6 +71,7 @@ Following the **environment** variables that are available for JMeter server:
 
 | Environment | Value |
 | --- | --- |
+| JMETER_SERVER_ID | 0 |
 | JMETER_CLIENT_PORT | 7000 |
 | JMETER_RMI_SSL_DISABLED | TRUE |
 | JMETER_SERVER_ENABLED | FALSE |
@@ -84,6 +85,10 @@ Following the **environment** variables that are available for JMeter server:
 - Execute a Test Plan from git source
 
       docker run -t -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+
+- Execute a script from git source
+
+      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/test-script.sh
 
 - Execute a distributed test among jmeter servers
 
@@ -100,6 +105,7 @@ Following the **environment** variables that are available for JMeter client:
 | JMETER_RMI_SSL_DISABLED | TRUE |
 | JMETER_REMOTE_SERVERS | NONE |
 | JMETER_CLOSE_REMOTE_SERVERS | FALSE |
+| JMETER_SCRIPT_MODE | FALSE |
 
 > The env variable ``JMETER_SOURCE`` can be a local folder (``/mnt/source/``) or a git repository (https://github.com/jsa4000/Apache-JMeter-Toolkit.git)
 

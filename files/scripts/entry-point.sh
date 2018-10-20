@@ -8,7 +8,12 @@ echo "Jmeter Server enabled "${JMETER_SERVER_ENABLED^^}
 if [[ ${JMETER_SERVER_ENABLED^^} == "TRUE" ]]; then     
 	jmeter-server-start.sh $@
 else
-	jmeter-start.sh $@
+	echo "Jmeter Client script enabled "${JMETER_SCRIPT_MODE^^}
+	if [[ ${JMETER_SCRIPT_MODE^^} == "TRUE" ]]; then  
+		bash $@
+	else
+		jmeter-start.sh $@ 
+	fi
 fi                                               
 
 
