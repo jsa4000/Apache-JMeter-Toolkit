@@ -14,6 +14,20 @@
 
       docker run -it apache-jmeter
 
+  Note: it can be used following commands to enter into the container using **bash**
+
+      docker run -it -e JMETER_SCRIPT_MODE=true apache-jmeter bash
+
+      docker run -it -e JMETER_SCRIPT_MODE=true -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter bash
+
+            # Allows image to create automatically the outputs files
+            jmeter-start.sh -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+
+            # Disable automatic output to allow specify custom output files with (-l,--logfile,-j,--jmeterlogfile)
+            export JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE
+            # Run following script and generate manually the outputs
+            jmeter-start.sh -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/output1.log
+
   The output must be similar to the following
 
    ```txt
@@ -37,6 +51,8 @@
 
       docker image list
       docker image rm <id1> <id1> <id1> .. <idN> -f
+
+      docker system prune
 
   > In linux just use the following command ``docker rmi $(docker images -q -f dangling=true)``
 
@@ -104,14 +120,17 @@ Following the **environment** variables that are available for JMeter client:
 
 | Environment | Value |
 | --- | --- |
-| JMETER_SOURCE | /mnt/source/ |
+| JMETER_SOURCE | /mnt/source |
+| JMETER_OUTPUT_PATH | /tmp/jmeter |
 | JMETER_CLIENT_PORT | 7000 |
 | JMETER_RMI_SSL_DISABLED | TRUE |
 | JMETER_REMOTE_SERVERS | NONE |
 | JMETER_CLOSE_REMOTE_SERVERS | FALSE |
 | JMETER_SCRIPT_MODE | FALSE |
+| JMETER_AUTOMATIC_OUTPUT_ENABLED | TRUE |
 
-> The env variable ``JMETER_SOURCE`` can be a local folder (``/mnt/source/``) or a git repository (https://github.com/jsa4000/Apache-JMeter-Toolkit.git)
+> The env variable ``JMETER_SOURCE`` can be a **local** folder (``/mnt/source``) or a **git** repository (https://github.com/jsa4000/Apache-JMeter-Toolkit.git)
+> The env variable ``JMETER_AUTOMATIC_OUTPUT_ENABLED`` overwrites the entrances for outputs (-l,--logfile,-j,--jmeterlogfile) to allow automatization.
 
 ## Reference
 
