@@ -282,8 +282,6 @@ Process process = runTime.exec(path);
 
 log.info(&quot;Generating dashboard ...&quot;);
 
-process.waitFor();
-
 /*
 try{
 	Thread.sleep(20000);
