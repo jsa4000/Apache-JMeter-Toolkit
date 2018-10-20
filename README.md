@@ -9,6 +9,10 @@
 
 		docker build -t apache-jmeter . --rm
  
+- Execute a Test Plan from git source 
+ 
+	docker run -it -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter ./launch.sh -n -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+ 
  
 ## Reference
 
