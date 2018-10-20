@@ -11,6 +11,11 @@ echo "START Running Jmeter on `date`"
 echo "JVM_ARGS=${JVM_ARGS}"
 echo "jmeter args=$@"
 
+# Check for git source
+if [[ "$JMETER_SOURCE" =~ *.git ]]; then
+    git clone $JMETER_SOURCE
+fi
+
 # Keep entrypoint simple: we must pass the standard JMeter arguments
 jmeter $@
 echo "END Running Jmeter on `date`"
