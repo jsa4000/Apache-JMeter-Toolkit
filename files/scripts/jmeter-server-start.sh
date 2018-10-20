@@ -7,17 +7,14 @@ x=$(($freeMem/10*8))
 n=$(($freeMem/10*2))
 export JVM_ARGS="-Xmn${n}m -Xms${s}m -Xmx${x}m"
 
-echo "START Running Jmeter on `date`"
+echo "START Running Jmeter Server on `date`"
 echo "JVM_ARGS=${JVM_ARGS}"
 echo "jmeter args=$@"
-           
-# Check for git source    
-echo "Checking source "$JMETER_SOURCE                        
-if [[ $JMETER_SOURCE == *".git" ]]; then         
-    echo "Clonning from source "$JMETER_SOURCE   
-    git clone $JMETER_SOURCE                     
-fi                                               
+
+jmeter_args="-Jclient.rmi.localport=${JMETER_CLIENT_PORT} -Jserver.rmi.localport=${JMETER_SERVER_PORT} -Jserver.rmi.ssl.disable=${JMETER_RMI_SSL_DISABLED}"
+echo "jmeter args=${jmeter_args}"
 
 # Keep entrypoint simple: we must pass the standard JMeter arguments
-jmeter $@
+jmeter -s -n ${jmeter_args} $@
+
 echo "END Running Jmeter on `date`"
