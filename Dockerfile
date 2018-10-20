@@ -21,12 +21,17 @@ ENV JMETER_CLOSE_REMOTE_SERVERS FALSE
 ENV JMETER_SCRIPT_MODE FALSE
 ENV JMETER_AUTOMATIC_OUTPUT_ENABLED TRUE
 
+ENV MINIO_CLIENT_DOWNLOAD_URL https://dl.minio.io/client/mc/release/linux-amd64/mc
+ENV MINIO_BUCKET_NAME NONE
+ENV MC_HOSTS_REPO https://<Access-Key>:<Secret-Key>@<YOUR-S3-ENDPOINT>
+
 RUN apk add --update tzdata curl unzip bash git \
 	&& cp /usr/share/zoneinfo/UTC /etc/localtime \
 	&& echo "UTC" > /etc/timezone \
 	&& rm -rf /var/cache/apk/* \
 	&& mkdir -p /tmp/dependencies  \
 	&& curl -L --silent ${JMETER_DOWNLOAD_URL} > /tmp/dependencies/apache-jmeter-${JMETER_VERSION}.tgz \
+	&& curl -L --silent ${MINIO_CLIENT_DOWNLOAD_URL} > /usr/bin/mc && chmod +x /usr/bin/mc \
 	&& mkdir -p /opt  \
 	&& tar -xzf /tmp/dependencies/apache-jmeter-${JMETER_VERSION}.tgz -C /opt  \
 	&& rm -rf /tmp/dependencies

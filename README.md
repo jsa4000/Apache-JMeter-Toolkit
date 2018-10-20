@@ -14,38 +14,47 @@
 
       docker run -it apache-jmeter
 
-  Note: it can be used following commands to enter into the container using **bash**
+- The output must be similar to the following
 
-      docker run -it -e JMETER_SCRIPT_MODE=true apache-jmeter bash
+      ```txt
+      Checking source /mnt/source/
+      Jmeter Server enabled FALSE
+      START Running Jmeter on Sat Oct 20 15:50:38 UTC 2018
+      JVM_ARGS=-Xmn1356m -Xms5424m -Xmx5424m
+      jmeter args=
+      Oct 20, 2018 3:50:39 PM java.util.prefs.FileSystemPreferences$1 run
+      INFO: Created user preferences directory.
+      Incorrect Usage:Non-GUI runs require a test plan
+            --?
+                  print command line options and exit
+            -h, --help
+                  print usage information and exit
+            -v, --version
+      ...
+      ```
 
-      docker run -it -e JMETER_SCRIPT_MODE=true -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter bash
+- It can be used following commands to enter into the container using **bash**
+  
+  - Enter into the **shell** normally without doing any action
 
-            # Allows image to create automatically the outputs files
-            jmeter-start.sh -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+            docker run -it -e JMETER_SCRIPT_MODE=true apache-jmeter bash
 
-            # Disable automatic output to allow specify custom output files with (-l,--logfile,-j,--jmeterlogfile)
-            export JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE
-            # Run following script and generate manually the outputs
-            jmeter-start.sh -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/output1.log
+  - Enter into the **shell** but specifying a **git** repository to start launching some tests inside the container
 
-  The output must be similar to the following
+            docker run -it -e JMETER_SCRIPT_MODE=true -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter bash
 
-   ```txt
-   Checking source /mnt/source/
-   Jmeter Server enabled FALSE
-   START Running Jmeter on Sat Oct 20 15:50:38 UTC 2018
-   JVM_ARGS=-Xmn1356m -Xms5424m -Xmx5424m
-   jmeter args=
-   Oct 20, 2018 3:50:39 PM java.util.prefs.FileSystemPreferences$1 run
-   INFO: Created user preferences directory.
-   Incorrect Usage:Non-GUI runs require a test plan
-         --?
-               print command line options and exit
-         -h, --help
-               print usage information and exit
-         -v, --version
-   ...
-   ```
+                  # Allows image to create automatically the outputs files
+                  jmeter-start.sh -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+
+                  # Disable automatic output to allow specify custom output files with (-l,--logfile,-j,--jmeterlogfile)
+                  export JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE
+                  # Run following script and generate manually the outputs
+                  jmeter-start.sh -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/output1.log
+
+                  # Grant permissions to the script to run manually
+                  chmod +x Apache-JMeter-Toolkit/files/examples/test-script.sh
+                  # Launch the script
+                  Apache-JMeter-Toolkit/files/examples/test-script.sh
 
 - To clean up the images build
 
@@ -131,6 +140,63 @@ Following the **environment** variables that are available for JMeter client:
 
 > The env variable ``JMETER_SOURCE`` can be a **local** folder (``/mnt/source``) or a **git** repository (https://github.com/jsa4000/Apache-JMeter-Toolkit.git)
 > The env variable ``JMETER_AUTOMATIC_OUTPUT_ENABLED`` overwrites the entrances for outputs (-l,--logfile,-j,--jmeterlogfile) to allow automatization.
+
+## Cloud Object Storage
+
+- Run following command to run a **minio** container
+
+      docker run --name minio01 -e MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE -e MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY -p 9000:9000 minio/minio server /data
+
+- Credentials to access to minio object storage
+
+  - **ACCESS_KEY** : AKIAIOSFODNN7EXAMPLE
+  - **SECRET_KEY** : wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+- Get minio client from the [repository](https://github.com/minio/mc)
+
+      wget https://dl.minio.io/client/mc/release/linux-amd64/mc
+      chmod +x mc
+
+- Verify the client work successfully
+
+      ./mc --help
+
+- Create an environment variable for the connection inside the container
+
+      export MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000
+
+- List all the buckets in the account
+
+      ./mc ls REPO
+
+- Create a bucket (if not exist)
+
+      ./mc mb REPO/test02  
+
+  > Bucket must be created using **lowercase** names
+
+- Copy a file into the bucket
+
+      ./mc cp /tmp/jmeter/summary-outputs.tar.gz REPO/test02
+
+### JMeter Integration
+
+- Start **minio** server and create a bucket ``test02``
+
+- Standalone tests using **Test Plan** and **minio**
+
+      docker run -it -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+
+- Standalone tests using **scripts** and **minio**
+
+      docker run -t -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SCRIPT_MODE=TRUE -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/files/examples/test-script.sh
+
+- Distributed tests using **scripts** and **minio**
+
+      docker run -t -e JMETER_SERVER_ENABLED=true -p 1099:1099 apache-jmeter -j file-server.log
+      docker run -t -e JMETER_SERVER_ENABLED=true -p 1098:1099 apache-jmeter -j file-server.log
+
+       docker run -t -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/files/examples/test-script.sh
 
 ## Reference
 
