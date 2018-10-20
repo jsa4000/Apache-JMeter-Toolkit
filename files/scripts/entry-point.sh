@@ -9,8 +9,9 @@ if [[ ${JMETER_SERVER_ENABLED^^} == "TRUE" ]]; then
 	jmeter-server-start.sh $@
 else
 	echo "Jmeter Client script enabled "${JMETER_SCRIPT_MODE^^}
-	if [[ ${JMETER_SCRIPT_MODE^^} == "TRUE" ]]; then  
-		bash $@
+	if [[ ${JMETER_SCRIPT_MODE^^} == "TRUE" ]]; then 
+		chmod +x $@ 
+		$@
 	else
 		jmeter-start.sh $@ 
 	fi
