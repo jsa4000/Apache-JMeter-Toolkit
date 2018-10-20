@@ -6,16 +6,16 @@ ARG JMETER_VERSION="5.0"
 
 ENV JMETER_HOME /opt/apache-jmeter-${JMETER_VERSION}
 ENV JMETER_BIN  ${JMETER_HOME}/bin
-ENV MIRROR_HOST https://archive.apache.org/dist/jmeter
-ENV JMETER_DOWNLOAD_URL ${MIRROR_HOST}/binaries/apache-jmeter-${JMETER_VERSION}.tgz
+ENV JMETER_MIRROR_HOST https://archive.apache.org/dist/jmeter
+ENV JMETER_DOWNLOAD_URL ${JMETER_MIRROR_HOST}/binaries/apache-jmeter-${JMETER_VERSION}.tgz
 ENV JMETER_PLUGINS_FOLDER ${JMETER_HOME}/lib/ext/
 ENV JMETER_SOURCE /mnt/source/
 
-ENV JMETER_SERVER_PORT 60000
 ENV JMETER_CLIENT_PORT 7000
 ENV JMETER_RMI_SSL_DISABLED TRUE
 ENV JMETER_SERVER_ENABLED FALSE
 ENV JMETER_REMOTE_SERVERS NONE
+ENV JMETER_CLOSE_REMOTE_SERVERS FALSE
 
 RUN apk add --update tzdata curl unzip bash git \
 	&& cp /usr/share/zoneinfo/UTC /etc/localtime \
@@ -29,7 +29,7 @@ RUN apk add --update tzdata curl unzip bash git \
 	
 ENV PATH $PATH:$JMETER_BIN
 
-EXPOSE 60000
+EXPOSE 1099
 
 WORKDIR ${JMETER_HOME}
 

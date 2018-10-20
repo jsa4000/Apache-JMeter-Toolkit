@@ -11,7 +11,7 @@ echo "START Running Jmeter Server on `date`"
 echo "JVM_ARGS=${JVM_ARGS}"
 echo "jmeter args=$@"
 
-jmeter_args="-Jclient.rmi.localport=${JMETER_CLIENT_PORT} -Jserver.rmi.localport=${JMETER_SERVER_PORT} -Jserver.rmi.ssl.disable=${JMETER_RMI_SSL_DISABLED}"
+jmeter_args="-Jclient.rmi.localport=${JMETER_CLIENT_PORT} -Jserver.rmi.ssl.disable=${JMETER_RMI_SSL_DISABLED}"
 echo "jmeter args=${jmeter_args}"
 
 # Keep entrypoint simple: we must pass the standard JMeter arguments

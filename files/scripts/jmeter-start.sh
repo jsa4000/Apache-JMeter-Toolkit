@@ -13,8 +13,11 @@ echo "jmeter args=$@"
 
 remote_args=""
 #Check for distributed settings
-if [[ ${JMETER_REMOTE_SERVERS^^} != "NONE" ]]; then  
-    remote_args="-X -Jclient.rmi.localport=${JMETER_CLIENT_PORT} -Jserver.rmi.ssl.disable=${JMETER_RMI_SSL_DISABLED} -R ${JMETER_REMOTE_SERVERS}"
+if [[ ${JMETER_REMOTE_SERVERS^^} != "NONE" ]]; then 
+    if [[ ${JMETER_CLOSE_REMOTE_SERVERS^^} == "TRUE" ]]; then 
+        remote_args="-X"
+    fi  
+    remote_args="${remote_args} -Jclient.rmi.localport=${JMETER_CLIENT_PORT} -Jserver.rmi.ssl.disable=${JMETER_RMI_SSL_DISABLED} -R ${JMETER_REMOTE_SERVERS}"
     echo "remote args=${remote_args}"
 fi  
 
