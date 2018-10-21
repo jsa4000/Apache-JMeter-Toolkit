@@ -13,8 +13,8 @@ echo "JVM_ARGS=${JVM_ARGS}"
 echo "jmeter args=${jmeter_args}"
 
 # Check jmeter automatic args for the output
-jmeter_args=$(get-automatic-args.sh jmeter_args)
-echo "jmeter current args=${jmeter_args}"
+jmeter_args=$(get-automatic-args.sh ${jmeter_args})
+echo "jmeter automatic args=${jmeter_args}"
 
 #Set remote args
 jmeter_remote_args="-Jclient.rmi.localport=${JMETER_CLIENT_PORT} -Jserver.rmi.ssl.disable=${JMETER_RMI_SSL_DISABLED}"
