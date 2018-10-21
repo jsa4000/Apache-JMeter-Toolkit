@@ -27,9 +27,6 @@ fi
 # Keep entrypoint simple: we must pass the standard JMeter arguments
 jmeter -n ${remote_args} ${jmeter_args}
 
-# Sleep 3 seconds to ensure jmeter has been shutdown properly
-sleep 3
-
 # Check to generate outputs and upload data to object storage
 process-outputs-automation.sh
 

@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Generate outputs and upload data to object storage
-if [[ ${JMETER_AUTOMATIC_OUTPUT_ENABLED^^} == "TRUE" ]]; then 
+if [[ ${JMETER_AUTOMATIC_OUTPUT_ENABLED^^} == "TRUE" ]] && [ -f "${JMETER_OUTPUT_PATH}/${JMETER_SUMMARY_FILENAME}" ]; then 
+    # Sleep 3 seconds to ensure jmeter has been shutdown properly
+    sleep 3
     echo "Generating jmeter dashboard"
     jmeter -g ${JMETER_OUTPUT_PATH}/${JMETER_SUMMARY_FILENAME} -o ${JMETER_OUTPUT_PATH}/${JMETER_DASHBOARD_PATHNAME}
     echo "Compressing output folder into a tar file"
