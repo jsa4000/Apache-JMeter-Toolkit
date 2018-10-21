@@ -219,20 +219,23 @@ Following the **environment** variables that are available for minio client:
 
 ### Networks
 
+- To run using **docker-compose** just use the same **network** to connect all jmeter slaves and master.
+
       docker network create --subnet=172.18.0.0/16 jmeter-network
 
+- Run JMeter slave and master from the same subnet and IP Addresses
 
       docker run -t -e JMETER_SERVER_HOSTNAME=192.168.99.100 -e JMETER_SERVER_ENABLED=true -p 1099:1099 -p 60000:60000  apache-jmeter
 
-      docker run -t -e JMETER_SERVER_HOSTNAME=192.168.99.100 -e JMETER_REMOTE_SERVERS=192.168.99.100:1099 -p 7000:7000 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+      docker run -t -e JMETER_REMOTE_SERVERS=192.168.99.100:1099 -p 7000:7000 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
 
+  > JMeter Master get stuck at the end if ``JMETER_SERVER_HOSTNAME`` is configured.
 
+- Run JMeter slave and master from the same subnet but different IP Addresses
 
       docker run -t -e JMETER_SERVER_HOSTNAME=10.0.0.10 -e JMETER_SERVER_ENABLED=true -p 1099:1099 -p 60000:60000  apache-jmeter
 
       docker run -t -e JMETER_SERVER_HOSTNAME=192.168.99.100 -e JMETER_REMOTE_SERVERS=10.0.0.10:1099 -p 7000:7000 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
-
-
 
 ### Docker Compose
 
@@ -250,4 +253,5 @@ Following the **environment** variables that are available for minio client:
 
 - [JMeter - Make use of Docker](https://www.blazemeter.com/blog/make-use-of-docker-with-jmeter-learn-how)
 - [JMeter - Distributed Testing with Docker](https://www.blazemeter.com/blog/jmeter-distributed-testing-with-docker)
-- [JMeter - Distributed Testing with Docker in AWS](http://www.testautomationguru.com/jmeter-distributed-load-testing-using-docker-in-aws/)
+- [JMeter – Distributed Load Testing using Docker](http://www.testautomationguru.com/jmeter-distributed-load-testing-using-docker/)
+- [JMeter - Distributed Load Testing using Docker in AWS](http://www.testautomationguru.com/jmeter-distributed-load-testing-using-docker-in-aws/)
