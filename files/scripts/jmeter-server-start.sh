@@ -17,7 +17,8 @@ jmeter_args=$(get-automatic-args.sh ${jmeter_args})
 echo "jmeter automatic args=${jmeter_args}"
 
 #Set remote args
-jmeter_remote_args="-Jclient.rmi.localport=${JMETER_CLIENT_PORT} -Jserver.rmi.ssl.disable=${JMETER_RMI_SSL_DISABLED}"
+jmeter_remote_args="-Jclient.rmi.localport=${JMETER_CLIENT_PORT} -Jserver.rmi.ssl.disable=${JMETER_RMI_SSL_DISABLED} -Jserver.rmi.localport=${JMETER_SERVER_PORT}"
+if [[ ${JMETER_SERVER_HOSTNAME^^} != "NONE" ]]; then jmeter_remote_args="${jmeter_remote_args} -Djava.rmi.server.hostname=${JMETER_SERVER_HOSTNAME}"; fi  
 echo "jmeter remote args=${jmeter_remote_args}"
 
 # Keep entrypoint simple: we must pass the standard JMeter arguments

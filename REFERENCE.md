@@ -217,6 +217,16 @@ Following the **environment** variables that are available for minio client:
 | MINIO_BUCKET_NAME | NONE |
 | MC_HOSTS_REPO | https://{Access-Key}:{Secret-Key}@{YOUR-S3-ENDPOINT} |
 
+### Networks
+
+      docker network create --subnet=172.18.0.0/16 jmeter-network
+
+
+
+
+      docker run -t -e JMETER_SERVER_HOSTNAME=192.168.99.100 -e JMETER_SERVER_ENABLED=true -p 1099:1099 apache-jmeter -j file-server.log
+
+
 ### Docker Compose
 
 - Run docker-compose to deploy several **jmeter servers** and a **minio server**.
