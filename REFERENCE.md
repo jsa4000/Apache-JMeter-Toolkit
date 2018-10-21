@@ -222,13 +222,16 @@ Following the **environment** variables that are available for minio client:
       docker network create --subnet=172.18.0.0/16 jmeter-network
 
 
-
-
       docker run -t -e JMETER_SERVER_HOSTNAME=192.168.99.100 -e JMETER_SERVER_ENABLED=true -p 1099:1099 -p 60000:60000  apache-jmeter
 
-      docker run -t -e JMETER_SERVER_HOSTNAME=10.0.0.1 -e JMETER_SERVER_ENABLED=true -p 1099:1099 -p 60000:60000  apache-jmeter
+      docker run -t -e JMETER_SERVER_HOSTNAME=192.168.99.100 -e JMETER_REMOTE_SERVERS=192.168.99.100:1099 -p 7000:7000 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
 
-      docker run -t -e JMETER_SERVER_HOSTNAME=192.168.99.100 -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -p 7000:7000 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+
+
+      docker run -t -e JMETER_SERVER_HOSTNAME=10.0.0.10 -e JMETER_SERVER_ENABLED=true -p 1099:1099 -p 60000:60000  apache-jmeter
+
+      docker run -t -e JMETER_SERVER_HOSTNAME=192.168.99.100 -e JMETER_REMOTE_SERVERS=10.0.0.10:1099 -p 7000:7000 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+
 
 
 ### Docker Compose
