@@ -48,7 +48,7 @@ RUN apk add --update tzdata curl unzip bash git \
 	
 ENV PATH $PATH:$JMETER_BIN
 
-EXPOSE 1099
+EXPOSE 1099 7000 60000
 
 WORKDIR ${JMETER_HOME}
 
