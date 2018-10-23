@@ -22,12 +22,7 @@ if [[ ${JMETER_REMOTE_SERVERS^^} != "NONE" ]]; then
     if [[ ${JMETER_CLOSE_REMOTE_SERVERS^^} == "TRUE" ]]; then remote_args="-X"; fi  
     remote_args="${remote_args} -Jclient.rmi.localport=${JMETER_CLIENT_PORT} -Jserver.rmi.ssl.disable=${JMETER_RMI_SSL_DISABLED} -R ${JMETER_REMOTE_SERVERS}"
     if [[ ${JMETER_SERVER_HOSTNAME^^} != "NONE" ]]; then remote_args="${remote_args} -Djava.rmi.server.hostname=${JMETER_SERVER_HOSTNAME}"; fi 
-    # Create new environment variable to use with JMeter parameters globally.
-    export JPTYPE="G"
     echo "remote args=${remote_args}"
-else
-    # Create new environment variable to use with JMeter parameters locally
-    export JPTYPE="J"
 fi
 
 # Keep entrypoint simple: we must pass the standard JMeter arguments
