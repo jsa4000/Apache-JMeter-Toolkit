@@ -299,7 +299,7 @@ __pycache__/
 
 # End of https://www.gitignore.io/api/csharp
 
-
+!/files/libs/**
 
 # Created by https://www.gitignore.io/api/java,maven,gradle,intellij
 
@@ -419,7 +419,7 @@ buildNumber.properties
 ### Gradle ###
 .gradle
 /build/**
-build/**
+build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
