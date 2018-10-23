@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.jmeter.helpers.DownloadHelperTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-10-23T07:29:54" hostname="TAG-2094" time="0.254">
-  <properties/>
-  <testcase name="download2" classname="com.jmeter.helpers.DownloadHelperTest" time="0.254"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
