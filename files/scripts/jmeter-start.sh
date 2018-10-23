@@ -29,6 +29,6 @@ fi
 jmeter -n ${remote_args} ${jmeter_args}
 
 # Check to generate outputs and upload data to object storage
-process-outputs-automation.sh
+process-outputs.sh
 
 echo "END Running Jmeter on `date`"

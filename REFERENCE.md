@@ -43,7 +43,7 @@
 
   - Inside the container, following operations can be performed
 
-            # 1. Allows image to create automatically the outputs files
+            # 1. Allows container to generate automatically outputs files
             jmeter-start.sh -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
 
             # 2. Disable automatic output to allow specify custom output files with (-l,--logfile,-j,--jmeterlogfile)
@@ -51,7 +51,9 @@
             # Run following script and generate manually the outputs
             jmeter-start.sh -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/output1.log
 
-            # 3. Grant permissions to the script to run manually
+            # 3. Enable automatic outputs (if disabled)
+            export JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE
+            # Grant permissions to the script to run manually
             chmod +x Apache-JMeter-Toolkit/files/examples/test-script.sh
             # Launch the script
             Apache-JMeter-Toolkit/files/examples/test-script.sh
@@ -248,6 +250,37 @@ Following the **environment** variables that are available for minio client:
 - Run following command to execute the script from **git** and upload the outputs generated to the **object storage**. This run in a **distributed** fashion over the servers configured in ``JMETER_REMOTE_SERVERS``.
 
       docker run -t -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_UPLOAD_ENABLED=TRUE -e MINIO_BUCKET_NAME=test02 -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git --net jmeter-network apache-jmeter Apache-JMeter-Toolkit/files/examples/test-script.sh
+
+## Json parsing
+
+[Command-line JSON processor](https://stedolan.github.io/jq/)
+
+- Install `jq` to parse json files on command line
+
+      sudo apt-get install jq -y
+
+- Given the following json file
+
+      ```json
+      {
+      "name": "javier",
+      "company": "fon",
+      "address": {
+      "country": "spain",
+      "city": "madrid"
+      }
+      }
+      ```
+
+- Get the entire document
+
+      jq "." textfile.json
+
+- Get a filed and removing the quotes
+
+      jq -r ".name" textfile.json
+
+> There are more options using jq, but these are the most useful one for simple json parsing.
 
 ## Reference
 

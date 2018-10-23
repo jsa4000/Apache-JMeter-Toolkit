@@ -8,7 +8,7 @@ ENV JMETER_HOME /opt/apache-jmeter-${JMETER_VERSION}
 ENV JMETER_BIN  ${JMETER_HOME}/bin
 ENV JMETER_MIRROR_HOST https://archive.apache.org/dist/jmeter
 ENV JMETER_DOWNLOAD_URL ${JMETER_MIRROR_HOST}/binaries/apache-jmeter-${JMETER_VERSION}.tgz
-ENV JMETER_LIBRARIES_FOLDER ${JMETER_HOME}/lib/
+ENV JMETER_LIBRARIES_FOLDER ${JMETER_HOME}/lib
 ENV JMETER_PLUGINS_FOLDER ${JMETER_HOME}/lib/ext
 ENV JMETER_SOURCE /mnt/source
 ENV JMETER_OUTPUT_PATH /tmp/jmeter
@@ -34,9 +34,9 @@ ENV JMETER_EXTRA_PARAMETERS NONE
 ENV MINIO_UPLOAD_ENABLED FALSE
 ENV MINIO_CLIENT_DOWNLOAD_URL https://dl.minio.io/client/mc/release/linux-amd64/mc
 ENV MINIO_BUCKET_NAME NONE
-ENV MC_HOSTS_REPO https://<Access-Key>:<Secret-Key>@<YOUR-S3-ENDPOINT>
+ENV MC_HOSTS_REPO https://<access-key>:<secret-key>@<s3-endpoint>
 
-RUN apk add --update tzdata curl unzip bash git \
+RUN apk add --update tzdata curl unzip bash git jq \
 	&& cp /usr/share/zoneinfo/UTC /etc/localtime \
 	&& echo "UTC" > /etc/timezone \
 	&& rm -rf /var/cache/apk/* \
@@ -49,7 +49,7 @@ RUN apk add --update tzdata curl unzip bash git \
 	
 ENV PATH $PATH:$JMETER_BIN
 
-EXPOSE 1099 7000 60000
+EXPOSE 1099
 
 WORKDIR ${JMETER_HOME}
 
