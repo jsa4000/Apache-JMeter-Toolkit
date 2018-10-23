@@ -10,7 +10,7 @@ if [[ ${JMETER_SERVER_ENABLED^^} == "TRUE" ]]; then
 	jmeter-server-start.sh $@
 else
 	# Check if remote servers are configured to set the JPTYPE env variable
-	check-remote-enabled.sh
+	source check-remote-enabled.sh
 	# Check for Jmeter script enabled  
 	echo "Jmeter Client script enabled "${JMETER_SCRIPT_MODE^^}
 	if [[ ${JMETER_SCRIPT_MODE^^} == "TRUE" ]]; then 
