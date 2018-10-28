@@ -1,2 +1,2 @@
-# Definitively text files 
+# Force to use lf only 
 *.sh eol=lf 
