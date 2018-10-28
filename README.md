@@ -2,6 +2,10 @@
 
 ## Installation
 
+- Do login into docker hub.
+
+      docker login
+
 - Build the Dockerfile
 
       docker build -t apache-jmeter . --rm
