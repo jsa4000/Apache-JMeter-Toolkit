@@ -11,12 +11,11 @@ repositories {
     mavenCentral()
 }
 
-//create a single Jar with all dependencies
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Implementation-Title': 'Gradle Jar File Example',
+        attributes 'Implementation-Title': 'JMeter Package with Helpers and libraries',
                 'Implementation-Version': version,
-                'Main-Class': 'com.mkyong.DateUtils'
+                'Main-Class': 'com.jmeter.App'
     }
     baseName = project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
