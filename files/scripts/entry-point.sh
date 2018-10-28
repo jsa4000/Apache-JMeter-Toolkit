@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Set default environment variables and default values
+source export-env-variables.sh
+
 # Check for git source    
 check-source.sh     
 
