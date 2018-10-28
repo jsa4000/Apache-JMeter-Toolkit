@@ -4,14 +4,29 @@
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test" enabled="true">
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
-          <elementProp name="outputFolder" elementType="Argument">
-            <stringProp name="Argument.name">outputFolder</stringProp>
-            <stringProp name="Argument.value">/tmp/jmeter/testLinux</stringProp>
+          <elementProp name="outputPath" elementType="Argument">
+            <stringProp name="Argument.name">outputPath</stringProp>
+            <stringProp name="Argument.value">${__P(outputPath,/tmp/jmeter)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="userName" elementType="Argument">
             <stringProp name="Argument.name">userName</stringProp>
-            <stringProp name="Argument.value">${__BeanShell( System.getenv(&quot;USERNAME&quot;) )}</stringProp>
+            <stringProp name="Argument.value">${__P(userName,undefined)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="threadCount" elementType="Argument">
+            <stringProp name="Argument.name">threadCount</stringProp>
+            <stringProp name="Argument.value">${__P(threadCount,1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="iterationCount" elementType="Argument">
+            <stringProp name="Argument.name">iterationCount</stringProp>
+            <stringProp name="Argument.value">${__P(iterationCount,1)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="partitionId" elementType="Argument">
+            <stringProp name="Argument.name">partitionId</stringProp>
+            <stringProp name="Argument.value">${__P(partitionId,0)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -35,14 +50,39 @@
         <stringProp name="ThreadGroup.delay"></stringProp>
       </SetupThreadGroup>
       <hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Show Environment Variables" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Show Variables" enabled="true">
           <stringProp name="scriptLanguage">java</stringProp>
           <stringProp name="parameters"></stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="cacheKey">true</stringProp>
-          <stringProp name="script">String userName = vars.get(&quot;userName&quot;);
+          <stringProp name="script">String outputPath = vars.get(&quot;outputPath&quot;);
+String userName = vars.get(&quot;userName&quot;);
+String threadCount = vars.get(&quot;threadCount&quot;);
+String iterationCount = vars.get(&quot;iterationCount&quot;);
+String partitionId = vars.get(&quot;partitionId&quot;);
 
-log.info(&quot;Username from Environment: &quot; + userName);</stringProp>
+log.info(&quot;---------------------------------------------&quot;);
+log.info(&quot;-- Variables&quot;);
+log.info(&quot;---------------------------------------------&quot;);
+log.info(&quot;- outputPath: &quot; + outputPath);
+log.info(&quot;- userName: &quot; + userName);
+log.info(&quot;- threadCount: &quot; + threadCount);
+log.info(&quot;- iterationCount: &quot; + iterationCount);
+log.info(&quot;- partitionId: &quot; + partitionId);
+log.info(&quot;---------------------------------------------&quot;);
+</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Create Test Data" enabled="true">
+          <stringProp name="scriptLanguage">java</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">log.info(&quot;Creating Test Data&quot;);
+
+// Create ncecessary data for the test to be performed
+
+log.info(&quot;Finished to create test data&quot;);</stringProp>
         </JSR223Sampler>
         <hashTree/>
       </hashTree>
@@ -50,11 +90,11 @@ log.info(&quot;Username from Environment: &quot; + userName);</stringProp>
         <longProp name="ThreadGroup.start_time">1143889321000</longProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
-        <stringProp name="ThreadGroup.num_threads">3</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${threadCount}</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">5</stringProp>
+          <stringProp name="LoopController.loops">${iterationCount}</stringProp>
         </elementProp>
         <longProp name="ThreadGroup.end_time">1143889321000</longProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -212,7 +252,7 @@ log.info(&quot;Username from Environment: &quot; + userName);</stringProp>
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename">${outputFolder}/summary.csv</stringProp>
+        <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
       <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
@@ -267,31 +307,16 @@ log.info(&quot;Username from Environment: &quot; + userName);</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
       </PostThreadGroup>
       <hashTree>
-        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Generate Dashboard Report" enabled="true">
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="CleanUp Test Data" enabled="true">
           <stringProp name="cacheKey">true</stringProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="parameters"></stringProp>
-          <stringProp name="script">String outputfolder = vars.get(&quot;outputFolder&quot;);
+          <stringProp name="script">log.info(&quot;CleanUp Created Test Data&quot;);
 
-String path = &quot;jmeter -g &quot; + outputfolder + &quot;/summary.csv -o &quot; + outputfolder + &quot;/dashboard&quot;;
+// Clean all the data created during the initialization
 
-log.info(&quot;Create dashboard: &quot; + path);
+log.info(&quot;Finished to clean test data&quot;);
 
-Runtime runTime = Runtime.getRuntime();
-Process process = runTime.exec(path);
-
-log.info(&quot;Generating dashboard ...&quot;);
-
-/*
-try{
-	Thread.sleep(20000);
-}
-catch(InterruptedException ex){
-    Thread.currentThread().interrupt();
-}
-*/
-
-log.info(&quot;Dashboard has generated successfully!&quot;);
 
 </stringProp>
           <stringProp name="scriptLanguage">java</stringProp>

@@ -44,19 +44,19 @@
   - Inside the container, following operations can be performed
 
             # 1. Allows container to generate automatically outputs files
-            jmeter-start.sh -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+            jmeter-start.sh -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
 
             # 2. Disable automatic output to allow specify custom output files with (-l,--logfile,-j,--jmeterlogfile)
             export JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE
             # Run following script and generate manually the outputs
-            jmeter-start.sh -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/output1.log
+            jmeter-start.sh -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/output1.log
 
             # 3. Enable automatic outputs (if disabled)
             export JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE
             # Grant permissions to the script to run manually
-            chmod +x Apache-JMeter-Toolkit/files/examples/test-script.sh
+            chmod +x Apache-JMeter-Toolkit/examples/run-tests.sh
             # Launch the script
-            Apache-JMeter-Toolkit/files/examples/test-script.sh
+            Apache-JMeter-Toolkit/examples/run-tests.sh
 
 - To clean up the images build
 
@@ -107,29 +107,29 @@ Following the **environment** variables that are available for JMeter server:
 
 - Execute a **Test Plan** from volume mount. *Automatic outputs are ***disabled***, so specifics ones are included by parameters, and the outputs will be generated into ``/c/tmp/jmeter``*
 
-      docker run -t -e JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE -v /d/DEVELOPMENT/Github/Apache-JMeter-Toolkit/files/examples:/mnt/source -v /c/tmp/jmeter:/tmp/jmeter apache-jmeter -t /mnt/source/Test01.linux.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/logfile.log
+      docker run -t -e JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE -v /d/DEVELOPMENT/Github/Apache-JMeter-Toolkit/files/examples:/mnt/source -v /c/tmp/jmeter:/tmp/jmeter apache-jmeter -t /mnt/source/jmeter-test-01.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/logfile.log
 
 > Using **Docker for windows**, it must be shared the **folders** Docker can use for **volumes**. In previous example, drivers ``C:\`` and ``D:\`` have been mapped as ``/c/`` and ``/d/`` respectively. If it is used ``/tmp/jmeter`` instead, the volume shared will be inside the Virtual Machine that hosts Docker Engine for Windows.
 
 - Execute a **Test Plan** from **git source**
 
-      docker run -t -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+      docker run -t -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
 
-      docker run -t -v /tmp/jmeter:/tmp/jmeter -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+      docker run -t -v /tmp/jmeter:/tmp/jmeter -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
 
 - Execute a **script** from **git source**
 
-      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/files/examples/test-script.sh
+      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/examples/run-tests.sh
 
-  > For scripts it is recommended to use ``jmeter-start.sh`` since it support for **distributed** testing using the same environment variables. An example could be seen at ``examples/test-script.sh``
+  > For scripts it is recommended to use ``jmeter-start.sh`` since it support for **distributed** testing using the same environment variables. An example could be seen at ``examples/run-tests.sh``
 
 - Execute a **distributed** test among jmeter servers
 
   > Use ``-e JMETER_CLOSE_REMOTE_SERVERS=TRUE`` to force to close the remote servers when the tests finish
 
-      docker run -t -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+      docker run -t -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
 
-      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/files/examples/test-script.sh
+      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/examples/run-tests.sh
 
 Following the **environment** variables that are available for JMeter client:
 
@@ -197,18 +197,18 @@ Following the **environment** variables that are available for JMeter client:
 
 - Standalone tests using **Test Plan** and **minio**
 
-      docker run -it -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+      docker run -it -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
 
 - Standalone tests using **scripts** and **minio**
 
-      docker run -t -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SCRIPT_MODE=TRUE -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/files/examples/test-script.sh
+      docker run -t -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SCRIPT_MODE=TRUE -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/examples/run-tests.sh
 
 - Distributed tests using **scripts** and **minio**
 
       docker run -t -e JMETER_SERVER_ENABLED=true -p 1099:1099 apache-jmeter -j file-server.log
       docker run -t -e JMETER_SERVER_ENABLED=true -p 1098:1099 apache-jmeter -j file-server.log
 
-      docker run -t -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/files/examples/test-script.sh
+      docker run -t -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/examples/run-tests.sh
 
 Following the **environment** variables that are available for minio client:
 
@@ -229,7 +229,7 @@ Following the **environment** variables that are available for minio client:
 
       docker run -t -e JMETER_SERVER_HOSTNAME=192.168.99.100 -e JMETER_SERVER_ENABLED=true -p 1099:1099 -p 60000:60000  apache-jmeter
 
-      docker run -t -e JMETER_REMOTE_SERVERS=192.168.99.100:1099 -p 7000:7000 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+      docker run -t -e JMETER_REMOTE_SERVERS=192.168.99.100:1099 -p 7000:7000 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
 
   > JMeter Master get stuck at the end if ``JMETER_SERVER_HOSTNAME`` is configured.
 
@@ -237,7 +237,7 @@ Following the **environment** variables that are available for minio client:
 
       docker run -t -e JMETER_SERVER_HOSTNAME=10.0.0.10 -e JMETER_SERVER_ENABLED=true -p 1099:1099 -p 60000:60000  apache-jmeter
 
-      docker run -t -e JMETER_SERVER_HOSTNAME=192.168.99.100 -e JMETER_REMOTE_SERVERS=10.0.0.10:1099 -p 7000:7000 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/files/examples/Test01.linux.jmx
+      docker run -t -e JMETER_SERVER_HOSTNAME=192.168.99.100 -e JMETER_REMOTE_SERVERS=10.0.0.10:1099 -p 7000:7000 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
 
 ### Docker Compose
 
@@ -249,7 +249,7 @@ Following the **environment** variables that are available for minio client:
 
 - Run following command to execute the script from **git** and upload the outputs generated to the **object storage**. This run in a **distributed** fashion over the servers configured in ``JMETER_REMOTE_SERVERS``.
 
-      docker run -t -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_UPLOAD_ENABLED=TRUE -e MINIO_BUCKET_NAME=test02 -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git --net jmeter-network apache-jmeter Apache-JMeter-Toolkit/files/examples/test-script.sh
+      docker run -t -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_UPLOAD_ENABLED=TRUE -e MINIO_BUCKET_NAME=test02 -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git --net jmeter-network apache-jmeter Apache-JMeter-Toolkit/examples/run-tests.sh
 
 ## Json parsing
 

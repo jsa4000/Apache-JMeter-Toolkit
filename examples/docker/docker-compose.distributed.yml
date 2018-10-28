@@ -1,0 +1,59 @@
+version: '3.5'
+services:
+
+  # NOTES:
+  # - Required to run previously docker-compose.servers.yml
+
+  jmeter-client:
+    image: apache-jmeter
+    command: Apache-JMeter-Toolkit/examples/scripts/${TEST_TYPE}/run-tests.sh
+    environment:
+      - JMETER_SCRIPT_MODE=TRUE
+      - MINIO_UPLOAD_ENABLED=TRUE
+      - MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@minio-server:9000
+      - MINIO_BUCKET_NAME=performancestest
+      - JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git
+      - JMETER_REMOTE_SERVERS=jmeter-server-01,jmeter-server-02,jmeter-server-03
+    ports:
+      - 7000:7000
+    networks: 
+      - jmeter-network
+    depends_on:
+      - create-buckets
+    labels:
+      label.jmeter-client: jmeter-client
+
+  minio-server:
+    image: minio/minio
+    environment:
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE 
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    ports:
+      - 9000:9000
+    command:
+      - 'server'
+      - '/data'
+    networks: 
+      - jmeter-network
+    labels:
+      label.jmeter-server: minio-server
+
+  create-buckets:
+    image: minio/mc
+    depends_on:
+      - minio-server
+    networks: 
+      - jmeter-network
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add repo http://minio-server:9000 AKIAIOSFODNN7EXAMPLE wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY;
+      /usr/bin/mc rm -r --force repo/performancestest;
+      /usr/bin/mc mb repo/performancestest;
+      /usr/bin/mc policy download repo/performancestest;
+      exit 0;
+      "
+
+networks:
+  jmeter-network:
+    external:
+      name: jmeter-network
