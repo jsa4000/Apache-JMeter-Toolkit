@@ -27,6 +27,11 @@ services:
     command:
       - 'server'
       - '/data'
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://minio-server:9000"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
     labels:
       label.jmeter-server: minio-server
 
@@ -34,6 +39,7 @@ services:
     image: minio/mc
     depends_on:
       - minio-server
+    restart: on-failure
     entrypoint: >
       /bin/sh -c "
       /usr/bin/mc config host add repo http://minio-server:9000 AKIAIOSFODNN7EXAMPLE wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY;
