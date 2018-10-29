@@ -10,7 +10,7 @@ if [[ ${JMETER_AUTOMATIC_OUTPUT_ENABLED^^} == "TRUE" ]] && [ -f "${JMETER_OUTPUT
     preffix="$(date +'%d%m%Y_%H%M%S')_$(($(date +'%s')))"
     mv ${JMETER_COMPRESSED_FILENAME} ${JMETER_OUTPUT_PATH}/${preffix}_${JMETER_COMPRESSED_FILENAME}
     # Check if minio is enabled to upload the image into the object storage
-    if [[ ${MINIO_UPLOAD_ENABLED^^} == "TRUE" ]] && [[ ${MINIO_BUCKET_NAME^^} != "NONE" ]]; then 
+    if [[ ${MINIO_UPLOAD_ENABLED^^} == "TRUE" ]] && [[ ! -z ${MINIO_BUCKET_NAME} ]]; then 
         echo "Uploading the content into the object storage"
         mc cp ${JMETER_OUTPUT_PATH}/${preffix}_${JMETER_COMPRESSED_FILENAME} REPO/${MINIO_BUCKET_NAME}
     fi

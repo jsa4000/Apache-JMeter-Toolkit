@@ -144,7 +144,7 @@ Following the **environment** variables that are available for JMeter client:
 | JMETER_OUTPUT_PATH | /tmp/jmeter |
 | JMETER_CLIENT_PORT | 7000 |
 | JMETER_RMI_SSL_DISABLED | TRUE |
-| JMETER_REMOTE_SERVERS | NONE |
+| JMETER_REMOTE_SERVERS | EMPTY |
 | JMETER_CLOSE_REMOTE_SERVERS | FALSE |
 | JMETER_SCRIPT_MODE | FALSE |
 | JMETER_AUTOMATIC_OUTPUT_ENABLED | TRUE |
@@ -152,7 +152,7 @@ Following the **environment** variables that are available for JMeter client:
 | JMETER_LOG_FILENAME | logfile.log |
 | JMETER_DASHBOARD_PATHNAME | dashboard |
 | JMETER_COMPRESSED_FILENAME | summary-outputs.tar.gz |
-| JMETER_EXTRA_PARAMETERS | NONE |
+| JMETER_EXTRA_PARAMETERS | EMPTY |
 
 > The env variable ``JMETER_SOURCE`` can be a **local** folder (``/mnt/source``) or a **git** repository (https://github.com/jsa4000/Apache-JMeter-Toolkit.git)
 > The env variable ``JMETER_AUTOMATIC_OUTPUT_ENABLED`` overwrites the entrances for outputs (-l,--logfile,-j,--jmeterlogfile) to allow automatization.
@@ -220,7 +220,7 @@ Following the **environment** variables that are available for minio client:
 | --- | --- |
 | MINIO_UPLOAD_ENABLED | FALSE |
 | MINIO_CLIENT_DOWNLOAD_URL | https://dl.minio.io/client/mc/release/linux-amd64/mc |
-| MINIO_BUCKET_NAME | NONE |
+| MINIO_BUCKET_NAME | EMPTY |
 | MC_HOSTS_REPO | https://{Access-Key}:{Secret-Key}@{YOUR-S3-ENDPOINT} |
 
 ### Networks
@@ -309,10 +309,10 @@ Following the **environment** variables that are available for minio client:
 | JMETER_SERVER_ID | 0 | |
 | JMETER_CLIENT_PORT | 7000 | |
 | JMETER_SERVER_PORT | 60000 | |
-| JMETER_SERVER_HOSTNAME | NONE | |
+| JMETER_SERVER_HOSTNAME | EMPTY | |
 | JMETER_RMI_SSL_DISABLED | TRUE | |
 | JMETER_SERVER_ENABLED | FALSE | |
-| JMETER_REMOTE_SERVERS | NONE | |
+| JMETER_REMOTE_SERVERS | EMPTY | |
 | JMETER_CLOSE_REMOTE_SERVERS | FALSE | |
 | JMETER_SCRIPT_MODE | FALSE | |
 | JMETER_AUTOMATIC_OUTPUT_ENABLED | TRUE | |
@@ -321,8 +321,8 @@ Following the **environment** variables that are available for minio client:
 | JMETER_LOG_FILENAME | logfile.log | |
 | JMETER_DASHBOARD_PATHNAME | dashboard |
 | JMETER_COMPRESSED_FILENAME | summary-outputs.tar.gz | |
-| JMETER_EXTRA_PARAMETERS | NONE | |
+| JMETER_EXTRA_PARAMETERS | EMPTY | |
 | MINIO_UPLOAD_ENABLED | FALSE | |
 | MINIO_CLIENT_DOWNLOAD_URL | https://dl.minio.io/client/mc/release/linux-amd64/mc | |
-| MINIO_BUCKET_NAME | NONE | |
+| MINIO_BUCKET_NAME | EMPTY | |
 | MC_HOSTS_REPO | https://access-key:secret-key@<3-endpoint | |
