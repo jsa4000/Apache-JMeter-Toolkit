@@ -142,12 +142,16 @@ Following the **environment** variables that are available for JMeter server:
 
   > Use ``-e JMETER_CLOSE_REMOTE_SERVERS=TRUE`` to force to close the remote servers when the tests finish
 
+      export HOSTNAME_ADDRESS=$(hostname -I | awk '{print $1}')
+
       docker run -t -e JMETER_SERVER_ENABLED=true -p 1099:1099 -p 60000:60000 apache-jmeter
       docker run -t -e JMETER_SERVER_ENABLED=true -p 1098:1099 -p 60001:60000 apache-jmeter
 
-      docker run -t -e JMETER_REMOTE_SERVERS=localhost:1098,localhost:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/tests/jmeter-test-01.jmx
+      docker run -t -e JMETER_REMOTE_SERVERS=172.16.24.85:1098,172.16.24.85:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/tests/jmeter-test-01.jmx
 
-      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/examples/scripts/stress/run-tests.sh
+      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=$HOSTNAME_ADDRESS:1098,$HOSTNAME_ADDRESS:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/examples/scripts/stress/run-tests.sh
+
+> This works because docker creates the container within the same network. For general purposes, each server must configure the ``JMETER_SERVER_HOSTNAME`` variable with the public ip of the current host.
 
 Following the **environment** variables that are available for JMeter client:
 
@@ -161,6 +165,7 @@ Following the **environment** variables that are available for JMeter client:
 | JMETER_REMOTE_SERVERS | EMPTY |
 | JMETER_CLOSE_REMOTE_SERVERS | FALSE |
 | JMETER_SCRIPT_MODE | FALSE |
+| JMETER_SERVER_HOSTNAME | EMPTY | |
 | JMETER_AUTOMATIC_OUTPUT_ENABLED | TRUE |
 | JMETER_SUMMARY_FILENAME | summary.csv |
 | JMETER_LOG_FILENAME | logfile.log |
@@ -213,20 +218,46 @@ Following the **environment** variables that are available for JMeter client:
 
 - Start **minio** server and create a bucket ``test02``
 
+      docker run -td -e MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE -e MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY -p 9000:9000 minio/minio server /data
+
+- Get the current hostname so it can be used internally for the container
+
+      export MINIO_ADDRESS=$(hostname -I | awk '{print $1}')
+
 - Standalone tests using **Test Plan** and **minio**
 
-      docker run -it -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
+      docker run -it \
+            -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@${MINIO_ADDRESS}:9000  \
+            -e MINIO_UPLOAD_ENABLED=true \
+            -e MINIO_BUCKET_NAME=test02 \
+            -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git \
+            apache-jmeter -t Apache-JMeter-Toolkit/examples/tests/jmeter-test-01.jmx
 
 - Standalone tests using **scripts** and **minio**
 
-      docker run -t -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SCRIPT_MODE=TRUE -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/examples/run-tests.sh
+      docker run -t \
+      -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@${MINIO_ADDRESS}:9000 \
+      -e MINIO_UPLOAD_ENABLED=true \
+      -e MINIO_BUCKET_NAME=test02 \
+      -e JMETER_SCRIPT_MODE=TRUE \
+      -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git \
+      apache-jmeter Apache-JMeter-Toolkit/examples/scripts/stress/run-tests.sh
 
 - Distributed tests using **scripts** and **minio**
 
-      docker run -t -e JMETER_SERVER_ENABLED=true -p 1099:1099 apache-jmeter -j file-server.log
-      docker run -t -e JMETER_SERVER_ENABLED=true -p 1098:1099 apache-jmeter -j file-server.log
+      export HOSTNAME_ADDRESS=$(hostname -I | awk '{print $1}')
 
-      docker run -t -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@192.168.99.100:9000 -e MINIO_BUCKET_NAME=test02 -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/examples/run-tests.sh
+      docker run -t -e JMETER_SERVER_ENABLED=true -p 1099:1099 apache-jmeter
+      docker run -t -e JMETER_SERVER_ENABLED=true -p 1098:1099 apache-jmeter
+
+      docker run -t \
+      -e MC_HOSTS_REPO=http://AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY@${MINIO_ADDRESS}:9000 \
+      -e MINIO_UPLOAD_ENABLED=true \
+      -e MINIO_BUCKET_NAME=test02 \
+      -e JMETER_SCRIPT_MODE=TRUE \
+      -e JMETER_REMOTE_SERVERS=${HOSTNAME_ADDRESS}:1098,${HOSTNAME_ADDRESS}:1099 \
+      -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git \
+      apache-jmeter Apache-JMeter-Toolkit/examples/scripts/stress/run-tests.sh
 
 Following the **environment** variables that are available for minio client:
 
