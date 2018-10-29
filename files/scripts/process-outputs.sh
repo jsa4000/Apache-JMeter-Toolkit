@@ -6,8 +6,8 @@ if [[ ${JMETER_AUTOMATIC_OUTPUT_ENABLED^^} == "TRUE" ]] && [ -f "${JMETER_OUTPUT
     sleep 3
     echo "Compressing output folder into a tar file"
     tar -zcf ${JMETER_COMPRESSED_FILENAME} ${JMETER_OUTPUT_PATH}
-    # Creating the prefix with the current time and the unixtime as unique indentifiers
-    preffix="$(date +'%d%m%Y_%H%M%S')_$(($(date +'%s')))"
+    # Creating the prefix with the current time
+    preffix="$(date +'%Y%m%dT%H%M%S')"
     mv ${JMETER_COMPRESSED_FILENAME} ${JMETER_OUTPUT_PATH}/${preffix}_${JMETER_COMPRESSED_FILENAME}
     # Check if minio is enabled to upload the image into the object storage
     if [[ ${MINIO_UPLOAD_ENABLED^^} == "TRUE" ]] && [[ ! -z ${MINIO_BUCKET_NAME} ]]; then 

@@ -104,7 +104,7 @@ Following the **environment** variables that are available for JMeter server:
 | --- | --- |
 | JMETER_SERVER_ID | 0 |
 | JMETER_CLIENT_PORT | 7000 |
-| JMETER_RMI_SSL_DISABLED | TRUE |
+| JMETER_SSL_ENABLED | TRUE |
 | JMETER_SERVER_ENABLED | FALSE |
 
 ### JMeter Client
@@ -143,7 +143,7 @@ Following the **environment** variables that are available for JMeter client:
 | JMETER_SOURCE | /mnt/source |
 | JMETER_OUTPUT_PATH | /tmp/jmeter |
 | JMETER_CLIENT_PORT | 7000 |
-| JMETER_RMI_SSL_DISABLED | TRUE |
+| JMETER_SSL_ENABLED | TRUE |
 | JMETER_REMOTE_SERVERS | EMPTY |
 | JMETER_CLOSE_REMOTE_SERVERS | FALSE |
 | JMETER_SCRIPT_MODE | FALSE |
@@ -310,7 +310,7 @@ Following the **environment** variables that are available for minio client:
 | JMETER_CLIENT_PORT | 7000 | |
 | JMETER_SERVER_PORT | 60000 | |
 | JMETER_SERVER_HOSTNAME | EMPTY | |
-| JMETER_RMI_SSL_DISABLED | TRUE | |
+| JMETER_SSL_ENABLED | TRUE | |
 | JMETER_SERVER_ENABLED | FALSE | |
 | JMETER_REMOTE_SERVERS | EMPTY | |
 | JMETER_CLOSE_REMOTE_SERVERS | FALSE | |
