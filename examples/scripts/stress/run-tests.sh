@@ -30,7 +30,23 @@ echo "----------------------------------"
 
 echo ""
 echo "----------------------------------" 
-echo "  Load Test                       " 
+echo "  Test 01                         " 
+echo "----------------------------------" 
+echo "  Threads = 1                     " 
+echo "  Concurrency (per thread) = 1    " 
+echo "----------------------------------" 
+echo ""
+threadCount=1
+iterationCount=1
+export JMETER_OUTPUT_PATH=${output_folder}/perf_test_${threadCount}_${iterationCount}
+jmeter-start.sh -t  ${tests_folder}/jmeter-test-01.jmx \
+                                    -${JMETER_PARAM_TYPE}threadCount=${threadCount} \
+                                    -${JMETER_PARAM_TYPE}iterationCount=${iterationCount} \
+                                    -${JMETER_PARAM_TYPE}outputPath=${JMETER_OUTPUT_PATH}
+
+echo ""
+echo "----------------------------------" 
+echo "  Test 02                         " 
 echo "----------------------------------" 
 echo "  Threads = 10                    " 
 echo "  Concurrency (per thread) = 10   " 
@@ -43,7 +59,8 @@ jmeter-start.sh -t  ${tests_folder}/jmeter-test-01.jmx \
                                     -${JMETER_PARAM_TYPE}threadCount=${threadCount} \
                                     -${JMETER_PARAM_TYPE}iterationCount=${iterationCount} \
                                     -${JMETER_PARAM_TYPE}outputPath=${JMETER_OUTPUT_PATH}
-                                   
+
+                                    
 echo ""
 echo "----------------------------------"
 echo "  Tests Finished" 

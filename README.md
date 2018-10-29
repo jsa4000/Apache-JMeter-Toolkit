@@ -48,19 +48,19 @@
   - Inside the container, following operations can be performed
 
             # 1. Allows container to generate automatically outputs files
-            jmeter-start.sh -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
+            jmeter-start.sh -t Apache-JMeter-Toolkit/examples/tests/jmeter-test-01.jmx
 
             # 2. Disable automatic output to allow specify custom output files with (-l,--logfile,-j,--jmeterlogfile)
             export JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE
             # Run following script and generate manually the outputs
-            jmeter-start.sh -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/output1.log
+            jmeter-start.sh -t Apache-JMeter-Toolkit/examples/tests/jmeter-test-01.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/output1.log
 
             # 3. Enable automatic outputs (if disabled)
             export JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE
             # Grant permissions to the script to run manually
-            chmod +x Apache-JMeter-Toolkit/examples/run-tests.sh
+            chmod +x Apache-JMeter-Toolkit/examples/scripts/stress/run-tests.sh
             # Launch the script
-            Apache-JMeter-Toolkit/examples/run-tests.sh
+            Apache-JMeter-Toolkit/examples/scripts/stress/run-tests.sh
 
 - To clean up the images build
 
