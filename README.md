@@ -82,6 +82,8 @@ Following the **environment** variables that available when the **build** is per
 | JMETER_MIRROR_HOST | https://archive.apache.org/dist/jmeter |
 | JMETER_DOWNLOAD_URL | ${MIRROR_HOST}/binaries/apache-jmeter- ${JMETER_VERSION}.tgz |
 | JMETER_PLUGINS_FOLDER | ${JMETER_HOME}/lib/ext/ |
+| JMETER_LIBRARIES_FOLDER | ${JMETER_HOME}/lib |
+| MINIO_CLIENT_DOWNLOAD_URL | https://dl.minio.io/client/mc/release/linux-amd64/mc |
 
 ## Modes
 
@@ -95,8 +97,13 @@ To run a JMeter server use the following command.
 
 It can be passed some **parameters** to the executable and bind **ports** to host
 
-      docker run -t -e JMETER_SERVER_ENABLED=true -p 1099:1099 apache-jmeter -j file-server.log
-      docker run -t -e JMETER_SERVER_ENABLED=true -p 1098:1099 apache-jmeter -j file-server.log
+      docker run -t -e JMETER_SERVER_ENABLED=true -p 1099:1099 -p 60000:60000 apache-jmeter
+      docker run -t -e JMETER_SERVER_ENABLED=true -p 1098:1099 -p 60001:60000 apache-jmeter
+
+To cleanup all the servers, perform following operation if no other container are launched
+
+      docker kill $(docker ps -q -a)
+      docker rm $(docker ps -q -a)
 
 Following the **environment** variables that are available for JMeter server:
 
@@ -104,22 +111,26 @@ Following the **environment** variables that are available for JMeter server:
 | --- | --- |
 | JMETER_SERVER_ID | 0 |
 | JMETER_CLIENT_PORT | 7000 |
-| JMETER_SSL_ENABLED | TRUE |
+| JMETER_SERVER_PORT | 60000 |
+| JMETER_SSL_ENABLED | FALSE |
 | JMETER_SERVER_ENABLED | FALSE |
 
 ### JMeter Client
 
 - Execute a **Test Plan** from volume mount. *Automatic outputs are ***disabled***, so specifics ones are included by parameters, and the outputs will be generated into ``/c/tmp/jmeter``*
 
-      docker run -t -e JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE -v /d/DEVELOPMENT/Github/Apache-JMeter-Toolkit/files/examples:/mnt/source -v /c/tmp/jmeter:/tmp/jmeter apache-jmeter -t /mnt/source/jmeter-test-01.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/logfile.log
+      docker run -t -e JMETER_AUTOMATIC_OUTPUT_ENABLED=FALSE \
+            -v /home/javiersantos/Projects/Github/Apache-JMeter-Toolkit/examples/tests:/mnt/source \
+            -v /tmp/jmeter:/tmp/jmeter \
+            apache-jmeter -t /mnt/source/jmeter-test-01.jmx -l /tmp/jmeter/output1.csv -j /tmp/jmeter/logfile.log
 
 > Using **Docker for windows**, it must be shared the **folders** Docker can use for **volumes**. In previous example, drivers ``C:\`` and ``D:\`` have been mapped as ``/c/`` and ``/d/`` respectively. If it is used ``/tmp/jmeter`` instead, the volume shared will be inside the Virtual Machine that hosts Docker Engine for Windows.
 
 - Execute a **Test Plan** from **git source**
 
-      docker run -t -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
+      docker run -t -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/tests/jmeter-test-01.jmx
 
-      docker run -t -v /tmp/jmeter:/tmp/jmeter -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
+      docker run -t -v /tmp/jmeter:/tmp/jmeter -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/tests/jmeter-test-01.jmx
 
 - Execute a **script** from **git source**
 
@@ -131,9 +142,12 @@ Following the **environment** variables that are available for JMeter server:
 
   > Use ``-e JMETER_CLOSE_REMOTE_SERVERS=TRUE`` to force to close the remote servers when the tests finish
 
-      docker run -t -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/jmeter-test-01.jmx
+      docker run -t -e JMETER_SERVER_ENABLED=true -p 1099:1099 -p 60000:60000 apache-jmeter
+      docker run -t -e JMETER_SERVER_ENABLED=true -p 1098:1099 -p 60001:60000 apache-jmeter
 
-      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/examples/run-tests.sh
+      docker run -t -e JMETER_REMOTE_SERVERS=localhost:1098,localhost:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter -t Apache-JMeter-Toolkit/examples/tests/jmeter-test-01.jmx
+
+      docker run -t -e JMETER_SCRIPT_MODE=TRUE -e JMETER_REMOTE_SERVERS=192.168.99.100:1098,192.168.99.100:1099 -e JMETER_SOURCE=https://github.com/jsa4000/Apache-JMeter-Toolkit.git apache-jmeter Apache-JMeter-Toolkit/examples/scripts/stress/run-tests.sh
 
 Following the **environment** variables that are available for JMeter client:
 
@@ -310,7 +324,7 @@ Following the **environment** variables that are available for minio client:
 | JMETER_CLIENT_PORT | 7000 | |
 | JMETER_SERVER_PORT | 60000 | |
 | JMETER_SERVER_HOSTNAME | EMPTY | |
-| JMETER_SSL_ENABLED | TRUE | |
+| JMETER_SSL_ENABLED | FALSE | |
 | JMETER_SERVER_ENABLED | FALSE | |
 | JMETER_REMOTE_SERVERS | EMPTY | |
 | JMETER_CLOSE_REMOTE_SERVERS | FALSE | |

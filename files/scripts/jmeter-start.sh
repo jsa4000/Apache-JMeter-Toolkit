@@ -19,8 +19,10 @@ echo "jmeter automatic args=${jmeter_args}"
 #Check for distributed settings
 remote_args=""
 if [[ ! -z ${JMETER_REMOTE_SERVERS} ]]; then 
+    ssl_disable=TRUE
+    if [[ ${JMETER_SSL_ENABLED^^} == "TRUE" ]]; then ssl_disable=FALSE; fi
     if [[ ${JMETER_CLOSE_REMOTE_SERVERS^^} == "TRUE" ]]; then remote_args="-X"; fi  
-    remote_args="${remote_args} -Jclient.rmi.localport=${JMETER_CLIENT_PORT} -Jserver.rmi.ssl.disable=${JMETER_SSL_ENABLED} -R ${JMETER_REMOTE_SERVERS}"
+    remote_args="${remote_args} -Jclient.rmi.localport=${JMETER_CLIENT_PORT} -Jserver.rmi.ssl.disable=${ssl_disable} -R ${JMETER_REMOTE_SERVERS}"
     if [[ ! -z ${JMETER_SERVER_HOSTNAME} ]]; then remote_args="${remote_args} -Djava.rmi.server.hostname=${JMETER_SERVER_HOSTNAME}"; fi 
     echo "remote args=${remote_args}"
 fi
