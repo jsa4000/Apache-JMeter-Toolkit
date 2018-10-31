@@ -19,6 +19,10 @@ do
         shift # past argument
         shift # past value
         ;;
+        *)    # unknown option
+        echo "Unknown option $1"
+        exit 1
+        ;;
     esac
 done
 
